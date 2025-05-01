@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: controller metadata deployment
+suite: controller metadata rollout
 templates:
   - common.yaml
 values:
@@ -8,7 +8,7 @@ values:
 tests:
   - it: default metadata should pass
     set:
-      controllers.main.type: deployment
+      controllers.main.type: rollout
     asserts:
       - documentIndex: &ControllerDoc 0
         matchRegex:
@@ -31,7 +31,7 @@ tests:
     set:
       controllers:
         main:
-          type: deployment
+          type: rollout
           annotations:
             test_annotation: test
           labels:
@@ -66,7 +66,7 @@ tests:
           global_annotation: test
       controllers:
         main:
-          type: deployment
+          type: rollout
           annotations:
             test_annotation: test
           labels:

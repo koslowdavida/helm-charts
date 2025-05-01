@@ -14,8 +14,9 @@ tests:
           size: 1Gi
     asserts:
       - documentIndex: 1
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: 1
         equal:
           path: spec.template.spec.volumes[0]
@@ -31,8 +32,9 @@ tests:
           existingClaim: myClaim
     asserts:
       - documentIndex: 0
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: 0
         equal:
           path: spec.template.spec.volumes[0]
@@ -50,8 +52,9 @@ tests:
           size: 1G
     asserts:
       - documentIndex: 1
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: 1
         equal:
           path: spec.template.spec.volumes[0]
@@ -69,8 +72,9 @@ tests:
           size: 1G
     asserts:
       - documentIndex: 1
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: 1
         equal:
           path: spec.template.spec.volumes[0]

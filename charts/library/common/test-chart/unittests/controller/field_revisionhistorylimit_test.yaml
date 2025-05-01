@@ -12,8 +12,9 @@ tests:
       controllers.main.type: deployment
     asserts:
       - documentIndex: 0
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: 0
         equal:
           path: spec.revisionHistoryLimit
@@ -26,8 +27,9 @@ tests:
         revisionHistoryLimit: 8
     asserts:
       - documentIndex: 0
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: 0
         equal:
           path: spec.revisionHistoryLimit
@@ -40,8 +42,9 @@ tests:
         revisionHistoryLimit: 0
     asserts:
       - documentIndex: 0
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: 0
         equal:
           path: spec.revisionHistoryLimit

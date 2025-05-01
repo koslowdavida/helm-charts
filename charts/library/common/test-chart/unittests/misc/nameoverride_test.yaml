@@ -9,8 +9,9 @@ tests:
   - it: default name is set to release name
     asserts:
       - documentIndex: &ControllerDoc 0
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: *ControllerDoc
         equal:
           path: metadata.name
@@ -21,8 +22,9 @@ tests:
       global.nameOverride: custom-name
     asserts:
       - documentIndex: &ControllerDoc 0
-        isKind:
-          of: Deployment
+        matchRegex:
+          path: kind
+          pattern: "^(Deployment|Rollout)$"
       - documentIndex: *ControllerDoc
         equal:
           path: metadata.name

@@ -11,6 +11,7 @@
         "type": "string",
         "enum": [
           "deployment",
+          "rollout",
           "statefulset",
           "daemonset",
           "cronjob",
@@ -149,6 +150,46 @@
                 "required": [
                   "daemonset"
                 ]
+              },
+              {
+                "required": [
+                  "rollout"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": {
+              "const": "rollout"
+            }
+          }
+        },
+        "then": {
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "statefulset"
+                ]
+              },
+              {
+                "required": [
+                  "cronjob"
+                ]
+              },
+              {
+                "required": [
+                  "job"
+                ]
+              },
+              {
+                "required": [
+                  "daemonset"
+                ]
               }
             ]
           }
@@ -181,6 +222,11 @@
               {
                 "required": [
                   "daemonset"
+                ]
+              },
+              {
+                "required": [
+                  "rollout"
                 ]
               }
             ]
@@ -217,14 +263,14 @@
                     "required": [
                       "daemonset"
                     ]
+                  },
+                  {
+                    "required": [
+                      "rollout"
+                    ]
                   }
                 ]
               }
-            },
-            {
-              "required": [
-                "cronjob"
-              ]
             }
           ]
         }
@@ -256,6 +302,11 @@
               {
                 "required": [
                   "daemonset"
+                ]
+              },
+              {
+                "required": [
+                  "rollout"
                 ]
               }
             ]
