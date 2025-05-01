@@ -1,0 +1,128 @@
+---
+name: "Bump Chart Versions"
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: "Type of version bump"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+    paths:
+      - "charts/**"
+
+jobs:
+  bump-version:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml semver
+
+      - name: Get changed charts
+        id: changed-charts
+        if: github.event_name == 'pull_request'
+        uses: tj-actions/changed-files@v46
+        with:
+          files: |
+            charts/**/Chart.yaml
+
+      - name: Determine charts to bump
+        id: determine-charts
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "CHARTS=$(find charts -name Chart.yaml | sort)" >> $GITHUB_ENV
+          else
+            echo "CHARTS=${{ steps.changed-charts.outputs.all_changed_files }}" >> $GITHUB_ENV
+          fi
+
+      - name: Bump chart versions
+        run: |
+          #!/bin/bash
+          set -e
+          
+          # Default to patch if not specified
+          BUMP_TYPE="${{ github.event.inputs.bump_type || 'patch' }}"
+          
+          for chart_file in $CHARTS; do
+            echo "Processing $chart_file"
+            
+            # Use Python to bump the version
+            python - "$chart_file" "$BUMP_TYPE" << 'EOF'
+          import sys
+          import yaml
+          import semver
+          
+          chart_file = sys.argv[1]
+          bump_type = sys.argv[2]
+          
+          with open(chart_file, 'r') as f:
+              chart = yaml.safe_load(f)
+          
+          current_version = chart['version']
+          
+          # Parse version with semver
+          try:
+              parsed_version = semver.VersionInfo.parse(current_version)
+              
+              # Bump version according to type
+              if bump_type == 'patch':
+                  new_version = str(parsed_version.bump_patch())
+              elif bump_type == 'minor':
+                  new_version = str(parsed_version.bump_minor())
+              elif bump_type == 'major':
+                  new_version = str(parsed_version.bump_major())
+              else:
+                  new_version = current_version
+                  
+              # Update chart version
+              chart['version'] = new_version
+              
+              # Write updated chart file
+              with open(chart_file, 'w') as f:
+                  yaml.dump(chart, f, default_flow_style=False)
+                  
+              print(f"Bumped {chart_file} from {current_version} to {new_version}")
+              
+          except ValueError as e:
+              print(f"Error parsing version {current_version}: {e}")
+              sys.exit(1)
+          EOF
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add charts/*/*/Chart.yaml
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          git commit -m "chore: bump chart versions [skip ci]"
+          git push
