@@ -50,15 +50,7 @@ jobs:
           files: |
             charts/**/Chart.yaml
 
-      - name: Determine charts to bump
-        id: determine-charts
-        run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            # Find all Chart.yaml files in the repository
-            echo "CHARTS=$(find charts -type f -name Chart.yaml | sort)" >> $GITHUB_ENV
-          else
-            echo "CHARTS=${{ steps.changed-charts.outputs.all_changed_files }}" >> $GITHUB_ENV
-          fi
+      # Skip the determine-charts step and handle file processing directly in the bump step
 
       - name: Bump chart versions
         run: |
@@ -68,7 +60,19 @@ jobs:
           # Default to patch if not specified
           BUMP_TYPE="${{ github.event.inputs.bump_type || 'patch' }}"
           
-          for chart_file in $CHARTS; do
+          # Find all Chart.yaml files directly in this step, excluding test-chart
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            CHART_FILES=$(find charts -type f -name Chart.yaml | grep -v "test-chart")
+          else
+            CHART_FILES="${{ steps.changed-charts.outputs.all_changed_files }}"
+          fi
+          
+          for chart_file in $CHART_FILES; do
+            # Skip if not a Chart.yaml file
+            if [[ "$chart_file" != *Chart.yaml ]]; then
+              continue
+            fi
+            
             echo "Processing $chart_file"
             
             # Use Python to bump the version
@@ -118,8 +122,8 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          # Add all Chart.yaml files that might have been modified
-          git add $(find charts -type f -name Chart.yaml)
+          # Add all modified Chart.yaml files
+          git add charts
           
           if git diff --staged --quiet; then
             echo "No changes to commit"
