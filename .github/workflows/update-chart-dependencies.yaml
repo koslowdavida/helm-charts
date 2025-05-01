@@ -37,8 +37,8 @@ jobs:
           #!/bin/bash
           set -e
           
-          # Find all Chart.yaml files
-          CHART_FILES=$(find charts -name Chart.yaml)
+          # Find all Chart.yaml files in the proper structure (charts/category/name/Chart.yaml)
+          CHART_FILES=$(find charts -path "charts/*/*/Chart.yaml")
           
           for chart_file in $CHART_FILES; do
             echo "Processing $chart_file"
@@ -87,6 +87,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Add all Chart.yaml files that might have been modified
           git add charts/*/*/Chart.yaml
           
           if git diff --staged --quiet; then

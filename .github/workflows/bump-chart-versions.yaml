@@ -54,7 +54,8 @@ jobs:
         id: determine-charts
         run: |
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "CHARTS=$(find charts -name Chart.yaml | sort)" >> $GITHUB_ENV
+            # Find only Chart.yaml files in the proper structure (charts/category/name/Chart.yaml)
+            echo "CHARTS=$(find charts -path "charts/*/*/Chart.yaml" | sort)" >> $GITHUB_ENV
           else
             echo "CHARTS=${{ steps.changed-charts.outputs.all_changed_files }}" >> $GITHUB_ENV
           fi
@@ -117,6 +118,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Add all Chart.yaml files that might have been modified
           git add charts/*/*/Chart.yaml
           
           if git diff --staged --quiet; then
