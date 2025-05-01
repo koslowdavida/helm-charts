@@ -38,7 +38,7 @@ jobs:
           set -e
           
           # Find all Chart.yaml files in the repository
-          CHART_FILES=$(find charts -type f -name Chart.yaml)
+          CHART_FILES=$(find charts -type f -name Chart.yaml | grep -v "test-chart")
           
           for chart_file in $CHART_FILES; do
             echo "Processing $chart_file"
@@ -87,8 +87,8 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          # Add all Chart.yaml files that might have been modified
-          git add $(find charts -type f -name Chart.yaml)
+          # Add all modified Chart.yaml files
+          git add charts
           
           if git diff --staged --quiet; then
             echo "No changes to commit"
