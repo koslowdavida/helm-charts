@@ -37,6 +37,14 @@ Renders the controller objects required by the chart.
       {{- $jobObject := (include "bjw-s.common.lib.job.valuesToObject" (dict "rootContext" $rootContext "id" $identifier "values" $controllerObject "itemCount" (len $enabledControllers))) | fromYaml -}}
       {{- include "bjw-s.common.lib.job.validate" (dict "rootContext" $rootContext "object" $jobObject) -}}
       {{- include "bjw-s.common.class.job" (dict "rootContext" $rootContext "object" $jobObject) | nindent 0 -}}
+
+    {{- else if eq $controllerObject.type "rollout" -}}
+      {{- $rolloutObject := (include "bjw-s.common.lib.rollout.valuesToObject" (dict "rootContext" $rootContext "id" $key "values" $controllerObject)) | fromYaml -}}
+      {{- include "bjw-s.common.lib.rollout.validate" (dict "rootContext" $rootContext "object" $rolloutObject) -}}
+      {{- include "bjw-s.common.class.rollout" (dict "rootContext" $rootContext "object" $rolloutObject) | nindent 0 -}}
     {{- end -}}
+
+
+
   {{- end -}}
 {{- end -}}
