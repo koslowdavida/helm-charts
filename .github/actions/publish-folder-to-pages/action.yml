@@ -1,0 +1,29 @@
+name: 'Publish Folder to GitHub Pages'
+description: 'Publish a folder to GitHub Pages'
+inputs:
+  path:
+    description: 'Path to the folder to publish'
+    required: true
+  deleteArtifactAfterPublish:
+    description: 'Delete the artifact after publishing'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{ inputs.path }}
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+    - name: Delete artifact
+      if: ${{ inputs.deleteArtifactAfterPublish == 'true' }}
+      shell: bash
+      run: |
+        echo "Deleting artifact..."
+        # The artifact is automatically deleted after the workflow completes
