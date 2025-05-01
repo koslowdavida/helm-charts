@@ -1,0 +1,98 @@
+---
+name: "Update Chart Dependencies"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+    paths:
+      - "charts/**"
+
+jobs:
+  update-dependencies:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Update chart dependencies
+        run: |
+          #!/bin/bash
+          set -e
+          
+          # Find all Chart.yaml files
+          CHART_FILES=$(find charts -name Chart.yaml)
+          
+          for chart_file in $CHART_FILES; do
+            echo "Processing $chart_file"
+            
+            # Use Python to update repository URLs
+            python - "$chart_file" << 'EOF'
+          import sys
+          import yaml
+          
+          chart_file = sys.argv[1]
+          
+          with open(chart_file, 'r') as f:
+              chart = yaml.safe_load(f)
+          
+          # Check if dependencies exist
+          if 'dependencies' in chart:
+              updated = False
+              for i, dep in enumerate(chart['dependencies']):
+                  if 'repository' in dep and 'bjw-s-labs.github.io' in dep['repository']:
+                      # Update repository URL
+                      old_url = dep['repository']
+                      new_url = old_url.replace('bjw-s-labs.github.io', 'koslowdavida.github.io')
+                      chart['dependencies'][i]['repository'] = new_url
+                      print(f"Updated dependency repository from {old_url} to {new_url}")
+                      updated = True
+              
+              # Update sources if they exist
+              if 'sources' in chart:
+                  for i, source in enumerate(chart['sources']):
+                      if 'bjw-s-labs' in source:
+                          old_source = source
+                          new_source = source.replace('bjw-s-labs', 'koslowdavida')
+                          chart['sources'][i] = new_source
+                          print(f"Updated source from {old_source} to {new_source}")
+                          updated = True
+              
+              # Write updated chart file if changes were made
+              if updated:
+                  with open(chart_file, 'w') as f:
+                      yaml.dump(chart, f, default_flow_style=False)
+                      print(f"Updated {chart_file}")
+          EOF
+          done
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add charts/*/*/Chart.yaml
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          git commit -m "chore: update chart dependency URLs [skip ci]"
+          git push
