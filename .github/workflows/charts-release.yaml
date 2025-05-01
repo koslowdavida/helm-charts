@@ -158,7 +158,7 @@ jobs:
       createGithubRelease: true
       publishToGhPages: true
       publishToOciRegistry: false
-      deployGhPages: true
+      deployGhPages: false
 
   release-other-charts:
     name: Release other charts
@@ -187,4 +187,61 @@ jobs:
       createGithubRelease: true
       publishToGhPages: true
       publishToOciRegistry: true
-      deployGhPages: true
+      deployGhPages: false
+
+  deploy-github-pages:
+    name: Deploy to GitHub Pages
+    needs:
+      - release-library-charts
+      - release-other-charts
+    if: |
+      ${{
+        !cancelled() &&
+        !contains(needs.*.result, 'failure')
+      }}
+    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Update Helm chart index
+        shell: bash
+        working-directory: gh-pages
+        run: |
+          helm repo index . --url https://koslowdavida.github.io/helm-charts/
+
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update Helm chart index"
+          repository: gh-pages
+          branch: gh-pages
+          file_pattern: "index.yaml"
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: gh-pages/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

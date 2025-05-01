@@ -40,6 +40,12 @@ on:
         default: "latest"
         required: false
         type: string
+      isLastChart:
+        description: >
+          Whether this is the last chart in the matrix, used to determine when to deploy to GitHub Pages.
+        default: false
+        required: false
+        type: boolean
 
 permissions:
   contents: read
@@ -198,8 +204,21 @@ jobs:
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
           commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
 
-      - name: Deploy changes to GitHub Pages
+      # Only deploy to GitHub Pages if this is the last chart in the matrix
+      # This prevents conflicts with multiple jobs trying to deploy simultaneously
+      - name: Check if this is the last chart
+        id: check-last-chart
         if: ${{ inputs.publishToGhPages && inputs.deployGhPages }}
+        shell: bash
+        run: |
+          if [[ "${{ inputs.isLastChart }}" == "true" ]]; then
+            echo "is_last=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_last=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy changes to GitHub Pages
+        if: ${{ inputs.publishToGhPages && inputs.deployGhPages && steps.check-last-chart.outputs.is_last == 'true' }}
         uses: ./src/.github/actions/publish-folder-to-pages
         with:
           path: gh-pages/
