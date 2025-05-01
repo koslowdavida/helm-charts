@@ -13,7 +13,7 @@ tests:
           accessMode: ReadWriteOnce
           size: 1Gi
     documentSelector:
-      path: $[?(@.kind == "Deployment")].metadata.name
+      path: $[?(@.kind == "Deployment" || @.kind == "Rollout")].metadata.name
       value: release-name
     asserts:
       - equal:
@@ -29,7 +29,7 @@ tests:
         existingClaim:
           existingClaim: myClaim
     documentSelector:
-      path: $[?(@.kind == "Deployment")].metadata.name
+      path: $[?(@.kind == "Deployment" || @.kind == "Rollout")].metadata.name
       value: release-name
     asserts:
       - equal:
@@ -46,7 +46,7 @@ tests:
           accessMode: ReadWriteMany
           size: 1G
     documentSelector:
-      path: $[?(@.kind == "Deployment")].metadata.name
+      path: $[?(@.kind == "Deployment" || @.kind == "Rollout")].metadata.name
       value: release-name
     asserts:
       - equal:
@@ -64,7 +64,7 @@ tests:
           accessMode: ReadWriteMany
           size: 1G
     documentSelector:
-      path: $[?(@.kind == "Deployment")].metadata.name
+      path: $[?(@.kind == "Deployment" || @.kind == "Rollout")].metadata.name
       value: release-name
     asserts:
       - equal:

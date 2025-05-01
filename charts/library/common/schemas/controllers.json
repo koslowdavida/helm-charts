@@ -17,6 +17,7 @@
             "type": "string",
             "enum": [
               "deployment",
+              "rollout",
               "statefulset",
               "daemonset",
               "cronjob",
@@ -47,7 +48,7 @@
             "type": "object"
           },
           "strategy": {
-            "type": "string"
+            "type": ["object", "string"],
           },
           "cronjob": {
             "$ref": "#/cronjob"
@@ -125,6 +126,110 @@
           {
             "if": {
               "properties": {
+                "type": { "const": "rollout" }
+              }
+            },
+            "then": {
+              "properties": {
+                "strategy": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "blueGreen": {
+                          "type": "object",
+                          "properties": {
+                            "activeService": { "type": "string" },
+                            "previewService": { "type": "string" },
+                            "scaleDownDelaySeconds": { "type": "integer" },
+                            "scaleDownDelayRevisionLimit": { "type": "integer" },
+                            "prePromotionAnalysis": { "type": "object" },
+                            "postPromotionAnalysis": { "type": "object" },
+                            "autoPromotionEnabled": { "type": "boolean" },
+                            "autoPromotionSeconds": { "type": "integer" },
+                            "previewReplicaCount": { "type": ["integer", "null"] }
+                          },
+                          "required": ["activeService", "previewService"],
+                          "additionalProperties": true
+                        }
+                      },
+                      "required": ["blueGreen"],
+                      "minProperties": 1,
+                      "maxProperties": 1
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "canary": {
+                          "type": "object",
+                          "properties": {
+                            "steps": { "type": "array", "items": { "type": "object" } },
+                            "canaryService": { "type": "string" },
+                            "stableService": { "type": "string" },
+                            "trafficRouting": { "type": "object" },
+                            "analysis": { "type": "object" }
+                          },
+                          "required": ["steps", "canaryService", "stableService"]
+                        }
+                      },
+                      "required": ["canary"],
+                      "minProperties": 1,
+                      "maxProperties": 1
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "rollingUpdate": {
+                          "type": "object",
+                          "properties": {
+                            "maxSurge": { "type": "string" },
+                            "maxUnavailable": { "type": "string" }
+                          }
+                        }
+                      },
+                      "required": ["rollingUpdate"],
+                      "minProperties": 1,
+                      "maxProperties": 1
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "type": { "not": { "const": "rollout" } }
+              }
+            },
+            "then": {
+              "properties": {
+                "strategy": {
+                  "type": "string",
+                  "enum": ["Recreate", "RollingUpdate"]
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "not": {
+                "properties": {
+                  "type": { "enum": ["rollout", "deployment", "statefulset", "daemonset", "cronjob", "job"] }
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "strategy": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
                 "type": {
                   "const": "deployment"
                 }
@@ -151,6 +256,11 @@
                   {
                     "required": [
                       "daemonset"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "rollout"
                     ]
                   }
                 ]
@@ -184,6 +294,11 @@
                   {
                     "required": [
                       "daemonset"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "rollout"
                     ]
                   }
                 ]
@@ -219,6 +334,11 @@
                       {
                         "required": [
                           "daemonset"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "rollout"
                         ]
                       }
                     ]
@@ -259,6 +379,11 @@
                   {
                     "required": [
                       "daemonset"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "rollout"
                     ]
                   }
                 ]
