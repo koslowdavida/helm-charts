@@ -5,7 +5,7 @@ Validate controller values
   {{- $rootContext := .rootContext -}}
   {{- $controllerValues := .object -}}
 
-  {{- $allowedControllerTypes := list "deployment" "daemonset" "statefulset" "cronjob" "job" -}}
+  {{- $allowedControllerTypes := list "deployment" "daemonset" "statefulset" "cronjob" "job" "rollout" -}}
   {{- if not (has $controllerValues.type $allowedControllerTypes) -}}
     {{- fail (printf "Not a valid controller.type (%s)" $controllerValues.type) -}}
   {{- end -}}
