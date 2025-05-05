@@ -25,6 +25,10 @@ Renders the controller objects required by the chart.
         {{- $deploymentObject := (include "bjw-s.common.lib.deployment.valuesToObject" (dict "rootContext" $rootContext "id" $key "values" $controllerObject)) | fromYaml -}}
         {{- include "bjw-s.common.lib.deployment.validate" (dict "rootContext" $rootContext "object" $deploymentObject) -}}
         {{- include "bjw-s.common.class.deployment" (dict "rootContext" $rootContext "object" $deploymentObject) | nindent 0 -}}
+      {{- else if eq $controllerObject.type "rollout" -}}
+        {{- $rolloutObject := (include "bjw-s.common.lib.rollout.valuesToObject" (dict "rootContext" $rootContext "id" $key "values" $controllerObject)) | fromYaml -}}
+        {{- include "bjw-s.common.lib.rollout.validate" (dict "rootContext" $rootContext "object" $rolloutObject) -}}
+        {{- include "bjw-s.common.class.rollout" (dict "rootContext" $rootContext "object" $rolloutObject) | nindent 0 -}}
       {{- else if eq $controllerObject.type "cronjob" -}}
         {{- $cronjobObject := (include "bjw-s.common.lib.cronjob.valuesToObject" (dict "rootContext" $rootContext "id" $key "values" $controllerObject)) | fromYaml -}}
         {{- include "bjw-s.common.lib.cronjob.validate" (dict "rootContext" $rootContext "object" $cronjobObject) -}}
