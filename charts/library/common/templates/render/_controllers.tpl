@@ -43,8 +43,5 @@ Renders the controller objects required by the chart.
       {{- include "bjw-s.common.lib.rollout.validate" (dict "rootContext" $rootContext "object" $rolloutObject) -}}
       {{- include "bjw-s.common.class.rollout" (dict "rootContext" $rootContext "object" $rolloutObject) | nindent 0 -}}
     {{- end -}}
-
-
-
   {{- end -}}
 {{- end -}}
