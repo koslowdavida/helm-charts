@@ -6,8 +6,15 @@ Validate controller values
   {{- $controllerValues := .object -}}
 
   {{- $allowedControllerTypes := list "deployment" "daemonset" "statefulset" "cronjob" "job" "rollout" -}}
-  {{- if not (has $controllerValues.type $allowedControllerTypes) -}}
-    {{- fail (printf "Not a valid controller.type (%s)" $controllerValues.type) -}}
+  {{- $controllerType := $controllerValues.type | default "deployment" -}}
+  {{- $valid := false -}}
+  {{- range $type := $allowedControllerTypes }}
+    {{- if eq $type $controllerType }}
+      {{- $valid = true -}}
+    {{- end }}
+  {{- end }}
+  {{- if not $valid -}}
+    {{- fail (printf "Not a valid controller.type (%s)" $controllerType) -}}
   {{- end -}}
 
   {{- $enabledContainers := include "bjw-s.common.lib.controller.enabledContainers" (dict "rootContext" $rootContext "controllerObject" $controllerValues) | fromYaml }}
