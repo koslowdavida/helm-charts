@@ -14,7 +14,7 @@ Validate controller values
     {{- end }}
   {{- end }}
   {{- if not $valid -}}
-    {{- fail (printf "Not a valid controller.type (%s)" $controllerType) -}}
+    {{- fail (printf "Not a valid gottem controller.type (%s)" $controllerType) -}}
   {{- end -}}
 
   {{- $enabledContainers := include "bjw-s.common.lib.controller.enabledContainers" (dict "rootContext" $rootContext "controllerObject" $controllerValues) | fromYaml }}
