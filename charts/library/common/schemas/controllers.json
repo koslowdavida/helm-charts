@@ -45,92 +45,7 @@
         "type": "object"
       },
       "strategy": {
-        "oneOf": [
-          {
-            "type": "string",
-            "enum": [
-              "Recreate",
-              "RollingUpdate"
-            ],
-            "description": "For deployment type"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "blueGreen": {
-                "type": "object",
-                "properties": {
-                  "activeService": {
-                    "type": "string"
-                  },
-                  "previewService": {
-                    "type": "string"
-                  },
-                  "preferExactMatch": {
-                    "type": "boolean"
-                  },
-                  "scaleDownDelaySeconds": {
-                    "type": "integer"
-                  },
-                  "scaleDownDelayRevisionLimit": {
-                    "type": "integer"
-                  },
-                  "prePromotionAnalysis": {
-                    "type": "object"
-                  },
-                  "postPromotionAnalysis": {
-                    "type": "object"
-                  }
-                },
-                "required": [
-                  "activeService",
-                  "previewService"
-                ]
-              },
-              "canary": {
-                "type": "object",
-                "properties": {
-                  "steps": {
-                    "type": "array",
-                    "items": {
-                      "type": "object"
-                    }
-                  },
-                  "canaryService": {
-                    "type": "string"
-                  },
-                  "stableService": {
-                    "type": "string"
-                  },
-                  "trafficRouting": {
-                    "type": "object"
-                  },
-                  "analysis": {
-                    "type": "object"
-                  }
-                },
-                "required": [
-                  "steps",
-                  "canaryService",
-                  "stableService"
-                ]
-              },
-              "rollingUpdate": {
-                "type": "object",
-                "properties": {
-                  "maxSurge": {
-                    "type": "string"
-                  },
-                  "maxUnavailable": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "additionalProperties": false,
-            "description": "For rollout type"
-          }
-        ]
+        "type": "string"
       },
       "cronjob": {
         "$ref": "#/cronjob"
@@ -140,6 +55,9 @@
       },
       "statefulset": {
         "$ref": "#/statefulset"
+      },
+      "rollout": {
+        "$ref": "#/rollout"
       },
       "applyDefaultContainerOptionsToInitContainers": {
         "type": "boolean",
@@ -204,72 +122,12 @@
         }
       }
     },
-    "oneOf": [
-      {
-        "properties": {
-          "type": {
-            "const": "deployment"
-          },
-          "strategy": {
-            "type": "string"
-          }
-        }
-      },
-      {
-        "properties": {
-          "type": {
-            "const": "rollout"
-          },
-          "strategy": {
-            "type": "object"
-          }
-        }
-      },
+    "allOf": [
       {
         "if": {
           "properties": {
             "type": {
               "const": "deployment"
-            }
-          }
-        },
-        "then": {
-          "not": {
-            "anyOf": [
-              {
-                "required": [
-                  "statefulset"
-                ]
-              },
-              {
-                "required": [
-                  "cronjob"
-                ]
-              },
-              {
-                "required": [
-                  "job"
-                ]
-              },
-              {
-                "required": [
-                  "daemonset"
-                ]
-              },
-              {
-                "required": [
-                  "rollout"
-                ]
-              }
-            ]
-          }
-        }
-      },
-      {
-        "if": {
-          "properties": {
-            "type": {
-              "const": "rollout"
             }
           }
         },
@@ -328,11 +186,6 @@
                 "required": [
                   "daemonset"
                 ]
-              },
-              {
-                "required": [
-                  "rollout"
-                ]
               }
             ]
           }
@@ -368,14 +221,14 @@
                     "required": [
                       "daemonset"
                     ]
-                  },
-                  {
-                    "required": [
-                      "rollout"
-                    ]
                   }
                 ]
               }
+            },
+            {
+              "required": [
+                "cronjob"
+              ]
             }
           ]
         }
@@ -407,11 +260,6 @@
               {
                 "required": [
                   "daemonset"
-                ]
-              },
-              {
-                "required": [
-                  "rollout"
                 ]
               }
             ]
@@ -574,6 +422,84 @@
       },
       "ttlSecondsAfterFinished": {
         "type": "integer"
+      }
+    }
+  },
+  "rollout": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "blueGreen": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "activeService": {
+            "type": "string"
+          },
+          "previewService": {
+            "type": "string"
+          },
+          "preferExactMatch": {
+            "type": "boolean"
+          },
+          "scaleDownDelaySeconds": {
+            "type": "integer"
+          },
+          "scaleDownDelayRevisionLimit": {
+            "type": "integer"
+          },
+          "prePromotionAnalysis": {
+            "type": "object"
+          },
+          "postPromotionAnalysis": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "activeService",
+          "previewService"
+        ]
+      },
+      "canary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "canaryService": {
+            "type": "string"
+          },
+          "stableService": {
+            "type": "string"
+          },
+          "trafficRouting": {
+            "type": "object"
+          },
+          "analysis": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "steps",
+          "canaryService",
+          "stableService"
+        ]
+      },
+      "rollingUpdate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "maxSurge": {
+            "type": "string"
+          },
+          "maxUnavailable": {
+            "type": "string"
+          }
+        }
       }
     }
   }
