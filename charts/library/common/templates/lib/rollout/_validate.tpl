@@ -19,9 +19,6 @@ Validate Rollout values
   {{- if $strategy.canary }}
     {{- $strategyTypeCount = add $strategyTypeCount 1 -}}
   {{- end -}}
-  {{- if $strategy.rollingUpdate }}
-    {{- $strategyTypeCount = add $strategyTypeCount 1 -}}
-  {{- end -}}
 
   {{- /* Ensure exactly one strategy type is specified */ -}}
   {{- if not (eq $strategyTypeCount 1) -}}
@@ -47,15 +44,6 @@ Validate Rollout values
     {{- end -}}
     {{- if not $strategy.canary.canaryService -}}
       {{- fail (printf "canary.canaryService is required for Rollout (controller: %s)" $rolloutValues.identifier) }}
-    {{- end -}}
-  {{- end -}}
-
-  {{- if $strategy.rollingUpdate -}}
-    {{- if not $strategy.rollingUpdate.maxSurge -}}
-      {{- fail (printf "rollingUpdate.maxSurge is required for Rollout (controller: %s)" $rolloutValues.identifier) }}
-    {{- end -}}
-    {{- if not $strategy.rollingUpdate.maxUnavailable -}}
-      {{- fail (printf "rollingUpdate.maxUnavailable is required for Rollout (controller: %s)" $rolloutValues.identifier) }}
     {{- end -}}
   {{- end -}}
 {{- end -}}
