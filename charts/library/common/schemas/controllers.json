@@ -143,9 +143,13 @@
                         "scaleDownDelaySeconds": { "type": "integer" },
                         "scaleDownDelayRevisionLimit": { "type": "integer" },
                         "prePromotionAnalysis": { "type": "object" },
-                        "postPromotionAnalysis": { "type": "object" }
+                        "postPromotionAnalysis": { "type": "object" },
+                        "autoPromotionEnabled": { "type": "boolean" },
+                        "autoPromotionSeconds": { "type": "integer" },
+                        "previewReplicaCount": { "type": ["integer", "null"] }
                       },
-                      "required": ["activeService", "previewService"]
+                      "required": ["activeService", "previewService"],
+                      "additionalProperties": true
                     }
                   }
                 },
