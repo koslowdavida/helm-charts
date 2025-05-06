@@ -6,7 +6,11 @@ Convert Rollout values to an object
   {{- $identifier := .id -}}
   {{- $objectValues := .values -}}
 
-  {{- $strategy := default "Recreate" $objectValues.strategy -}}
+  {{- $strategy := $objectValues.strategy -}}
+
+  {{- /* Process any templates in the tag */ -}}
+  {{- $strategy = tpl $strategy $rootContext -}}
+
   {{- $_ := set $objectValues "strategy" $strategy -}}
 
   {{- /* Return the Rollout object */ -}}

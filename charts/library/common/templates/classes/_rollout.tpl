@@ -51,6 +51,15 @@ spec:
       {{- with $rolloutObject.strategy.blueGreen.previewService }}
       previewService: {{ . }}
       {{- end }}
+      {{- with $rolloutObject.strategy.blueGreen.autoPromotionEnabled}}
+      autoPromotionEnabled: {{ . }}
+      {{- end }}
+      {{- with $rolloutObject.strategy.blueGreen.autoPromotionSeconds }}
+      autoPromotionSeconds: {{ . }}
+      {{- end }}
+      {{- with $rolloutObject.strategy.blueGreen.previewReplicaCount }}
+      previewReplicaCount: {{ . }}
+      {{- end }}
       {{- with $rolloutObject.strategy.blueGreen.preferExactMatch }}
       preferExactMatch: {{ . }}
       {{- end }}
