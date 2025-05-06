@@ -5,7 +5,25 @@ Template for canary strategy fields. Applies tpl to each string value.
   {{- $rootContext := .rootContext -}}
   {{- $values := .values -}}
 canary:
-  steps: {{ tpl $values.steps $rootContext }}
-  stableService: {{ tpl $values.stableService $rootContext | quote }}
-  canaryService: {{ tpl $values.canaryService $rootContext | quote }}
+  {{- with $values.analysis }}
+  analysis: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $values.antiAffinity }}
+  antiAffinity: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $values.canaryService }}
+  canaryService: {{ tpl . $rootContext | quote }}
+  {{- end }}
+  {{- with $values.stableService }}
+  stableService: {{ tpl . $rootContext | quote }}
+  {{- end }}
+  {{- with $values.maxSurge }}
+  maxSurge: {{ . }}
+  {{- end }}
+  {{- with $values.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- end }}
+  {{- with $values.trafficRouting }}
+  trafficRouting: {{ toYaml . | nindent 4 }}
+  {{- end }}
 {{- end -}}
