@@ -5,14 +5,21 @@ Convert Rollout values to an object
   {{- $rootContext := .rootContext -}}
   {{- $identifier := .id -}}
   {{- $objectValues := .values -}}
-
   {{- $strategy := $objectValues.strategy -}}
 
-  {{- /* Process any templates in the tag */ -}}
-  {{- $strategy = tpl $strategy $rootContext -}}
+  {{- $strategyObject := dict -}}
+  {{- /* Render the strategy object using the strategy lib */ -}}
+  {{- if $strategy.blueGreen }}
+    {{- $strategyObject = (include "bjw-s.common.lib.rollout.fields.blueGreen" (dict "rootContext" $rootContext "values" $strategy.blueGreen) | fromYaml) -}}
+  {{- else if $strategy.canary }}
+    {{- $strategyObject = (include "bjw-s.common.lib.rollout.fields.canary" (dict "rootContext" $rootContext "values" $strategy.canary) | fromYaml) -}}
+  {{- else if $strategy.rollingUpdate }}
+    {{- $strategyObject = (include "bjw-s.common.lib.rollout.fields.rollingUpdate" (dict "rootContext" $rootContext "values" $strategy.rollingUpdate) | fromYaml) -}}
+  {{- else }}
+    {{- fail "Unknown or missing strategy type" }}
+  {{- end }}
 
-  {{- $_ := set $objectValues "strategy" $strategy -}}
+  {{- $_ := set $objectValues "strategy" $strategyObject -}}
 
-  {{- /* Return the Rollout object */ -}}
   {{- $objectValues | toYaml -}}
 {{- end -}}
