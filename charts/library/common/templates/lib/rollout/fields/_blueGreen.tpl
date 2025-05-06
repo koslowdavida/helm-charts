@@ -6,8 +6,34 @@ Template for blueGreen strategy fields. Applies tpl to each string value.
   {{- $values := .values -}}
 blueGreen:
   activeService: {{ tpl $values.activeService $rootContext | quote }}
-  previewService: {{ tpl $values.previewService $rootContext | quote }}
-  autoPromotionEnabled: {{ $values.autoPromotionEnabled }}
-  autoPromotionSeconds: {{ $values.autoPromotionSeconds }}
-  previewReplicaCount: {{ $values.previewReplicaCount }}
+  {{- with $values.previewService }}
+  previewService: {{ tpl . $rootContext | quote }}
+  {{- end }}
+  {{- with $values.autoPromotionEnabled }}
+  autoPromotionEnabled: {{ . }}
+  {{- end }}
+  {{- with $values.autoPromotionSeconds }}
+  autoPromotionSeconds: {{ . }}
+  {{- end }}
+  {{- with $values.antiAffinity }}
+  antiAffinity: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $values.prePromotionAnalysis }}
+  prePromotionAnalysis: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $values.postPromotionAnalysis }}
+  postPromotionAnalysis: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with $values.previewReplicaCount }}
+  previewReplicaCount: {{ . }}
+  {{- end }}
+  {{- with $values.scaleDownDelaySeconds }}
+  scaleDownDelaySeconds: {{ . }}
+  {{- end }}
+  {{- with $values.scaleDownDelayRevisionLimit }}
+  scaleDownDelayRevisionLimit: {{ . }}
+  {{- end }}
+  {{- with $values.preferExactMatch }}
+  preferExactMatch: {{ . }}
+  {{- end }}
 {{- end -}}
