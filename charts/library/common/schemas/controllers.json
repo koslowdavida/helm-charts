@@ -45,117 +45,8 @@
         "type": "object"
       },
       "strategy": {
-        "oneOf": [
-          {
-            "if": {
-              "properties": {
-                "type": {
-                  "not": {
-                    "const": "rollout"
-                  }
-                }
-              }
-            },
-            "then": {
-              "type": "string",
-              "enum": [
-                "Recreate",
-                "RollingUpdate"
-              ]
-            }
-          },
-          {
-            "if": {
-              "properties": {
-                "type": {
-                  "const": "rollout"
-                }
-              }
-            },
-            "then": {
-              "oneOf": [
-                {
-                  "blueGreen": {
-                    "type": "object",
-                    "properties": {
-                      "activeService": {
-                        "type": "string"
-                      },
-                      "previewService": {
-                        "type": "string"
-                      },
-                      "preferExactMatch": {
-                        "type": "boolean"
-                      },
-                      "scaleDownDelaySeconds": {
-                        "type": "integer"
-                      },
-                      "scaleDownDelayRevisionLimit": {
-                        "type": "integer"
-                      },
-                      "prePromotionAnalysis": {
-                        "type": "object"
-                      },
-                      "postPromotionAnalysis": {
-                        "type": "object"
-                      }
-                    },
-                    "required": [
-                      "activeService",
-                      "previewService"
-                    ]
-                  }
-                },
-                {
-                  "canary": {
-                    "type": "object",
-                    "properties": {
-                      "steps": {
-                        "type": "array",
-                        "items": {
-                          "type": "object"
-                        }
-                      },
-                      "canaryService": {
-                        "type": "string"
-                      },
-                      "stableService": {
-                        "type": "string"
-                      },
-                      "trafficRouting": {
-                        "type": "object"
-                      },
-                      "analysis": {
-                        "type": "object"
-                      }
-                    },
-                    "required": [
-                      "steps",
-                      "canaryService",
-                      "stableService"
-                    ]
-                  }
-                },
-                {
-                  "rollingUpdate": {
-                    "type": "object",
-                    "properties": {
-                      "maxSurge": {
-                        "type": "string"
-                      },
-                      "maxUnavailable": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "type": "string"
-          }
-        ]
+        "type": ["object", "string"],
+        "description": "Controller deployment strategy. Format depends on controller type."
       },
       "cronjob": {
         "$ref": "#/cronjob"
@@ -230,6 +121,98 @@
       }
     },
     "allOf": [
+      {
+        "if": {
+          "properties": {
+            "type": { "const": "rollout" }
+          }
+        },
+        "then": {
+          "properties": {
+            "strategy": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "blueGreen": {
+                      "type": "object",
+                      "properties": {
+                        "activeService": { "type": "string" },
+                        "previewService": { "type": "string" },
+                        "preferExactMatch": { "type": "boolean" },
+                        "scaleDownDelaySeconds": { "type": "integer" },
+                        "scaleDownDelayRevisionLimit": { "type": "integer" },
+                        "prePromotionAnalysis": { "type": "object" },
+                        "postPromotionAnalysis": { "type": "object" }
+                      },
+                      "required": ["activeService", "previewService"]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "canary": {
+                      "type": "object",
+                      "properties": {
+                        "steps": { "type": "array", "items": { "type": "object" } },
+                        "canaryService": { "type": "string" },
+                        "stableService": { "type": "string" },
+                        "trafficRouting": { "type": "object" },
+                        "analysis": { "type": "object" }
+                      },
+                      "required": ["steps", "canaryService", "stableService"]
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "rollingUpdate": {
+                      "type": "object",
+                      "properties": {
+                        "maxSurge": { "type": "string" },
+                        "maxUnavailable": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "type": { "not": { "const": "rollout" } }
+          }
+        },
+        "then": {
+          "properties": {
+            "strategy": {
+              "type": "string",
+              "enum": ["Recreate", "RollingUpdate"]
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "not": {
+            "properties": {
+              "type": { "enum": ["rollout", "deployment", "statefulset", "daemonset", "cronjob", "job"] }
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "strategy": {
+              "type": "string"
+            }
+          }
+        }
+      },
       {
         "if": {
           "properties": {
