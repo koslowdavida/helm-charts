@@ -33,7 +33,4 @@ blueGreen:
   {{- with $values.scaleDownDelayRevisionLimit }}
   scaleDownDelayRevisionLimit: {{ . }}
   {{- end }}
-  {{- with $values.preferExactMatch }}
-  preferExactMatch: {{ . }}
-  {{- end }}
 {{- end -}}
