@@ -5,8 +5,8 @@ annotations:
 apiVersion: v2
 dependencies:
 - name: common
-  repository: file://../../library/common/
-  version: 3.7.6
+  repository: https://koslowdavida.github.io/helm-charts
+  version: 3.8.0
 description: A common powered chart template. This can be useful for small projects
   that don't have their own chart.
 kubeVersion: '>=1.22.0-0'
