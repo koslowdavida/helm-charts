@@ -139,7 +139,6 @@
                       "properties": {
                         "activeService": { "type": "string" },
                         "previewService": { "type": "string" },
-                        "preferExactMatch": { "type": "boolean" },
                         "scaleDownDelaySeconds": { "type": "integer" },
                         "scaleDownDelayRevisionLimit": { "type": "integer" },
                         "prePromotionAnalysis": { "type": "object" },
