@@ -4,11 +4,8 @@ annotations:
     \ backendRefs values in HTTPRoute"
 apiVersion: v2
 dependencies:
-# - name: common
-#   repository: https://koslowdavida.github.io/helm-charts
-#   version: 3.7.6
 - name: common
-  repository: "file://../../library/common/"
+  repository: file://../../library/common/
   version: 3.7.6
 description: A common powered chart template. This can be useful for small projects
   that don't have their own chart.
@@ -19,4 +16,4 @@ maintainers:
 name: app-template
 sources:
 - https://github.com/koslowdavida/helm-charts
-version: 3.7.6
+version: 3.8.0

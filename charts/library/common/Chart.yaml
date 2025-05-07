@@ -16,4 +16,4 @@ name: common
 sources:
 - https://github.com/bjw-s-labs/helm-charts
 type: library
-version: 3.7.6
+version: 3.8.0
