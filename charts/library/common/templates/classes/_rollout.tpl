@@ -50,7 +50,7 @@ spec:
   template:
     metadata:
       {{- with (include "bjw-s.common.lib.pod.metadata.annotations" (dict "rootContext" $rootContext "controllerObject" $rolloutObject)) }}
-      annotations: {{ . | nindent 8 }}
+      annotations: {{ tpl . $rootContext | nindent 8 }}
       {{- end -}}
       {{- with (include "bjw-s.common.lib.pod.metadata.labels" (dict "rootContext" $rootContext "controllerObject" $rolloutObject)) }}
       labels: {{ . | nindent 8 }}
