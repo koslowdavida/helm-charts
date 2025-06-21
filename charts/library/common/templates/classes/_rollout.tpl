@@ -7,7 +7,7 @@ using the common library.
   {{- $rolloutObject := .object -}}
 
   {{- $labels := merge
-    (dict "app.kubernetes.io/component" $rolloutObject.identifier)
+    (dict "app.kubernetes.io/controller" $rolloutObject.identifier)
     ($rolloutObject.labels | default dict)
     (include "bjw-s.common.lib.metadata.allLabels" $rootContext | fromYaml)
   -}}
