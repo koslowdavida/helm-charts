@@ -1,19 +1,24 @@
-annotations:
-  artifacthub.io/changes: "- kind: fixed\n  description: |-\n    Fixed name suffix\
-    \ for HTTPRoute\n- kind: fixed\n  description: |-\n    Fixed incorrect default\
-    \ backendRefs values in HTTPRoute"
+---
 apiVersion: v2
-description: Function library for Helm charts
-home: https://github.com/koslowdavida/helm-charts/tree/main/charts/library/common
-keywords:
-- common
-- library
-kubeVersion: '>=1.22.0-0'
-maintainers:
-- email: koslowdavida@gmail.com
-  name: David Koslow
 name: common
-sources:
-- https://github.com/koslowdavida/helm-charts
+description: Function library for Helm charts
 type: library
-version: 3.8.0
+version: 4.1.1
+kubeVersion: ">=1.28.0-0"
+keywords:
+  - common
+  - library
+home: https://github.com/koslowdavida/helm-charts/tree/main/charts/library/common
+maintainers:
+  - name: koslowdavida
+    email: koslowdavida@gmail.com
+sources:
+  - https://github.com/koslowdavida/helm-charts
+annotations:
+  artifacthub.io/changes: |-
+    - kind: fixed
+      description: |-
+        Fixed an edge-case bug where specifying a merge defaultPodOptionsStrategy could crash the chart.
+    - kind: fixed
+      description: |-
+        Fixed Route automatic service detection if there are no rules defined.

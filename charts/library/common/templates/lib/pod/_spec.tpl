@@ -48,6 +48,11 @@ imagePullSecrets: {{ . | nindent 2 }}
   {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "terminationGracePeriodSeconds")) }}
 terminationGracePeriodSeconds: {{ . | trim }}
   {{- end -}}
+  {{- if ge ($rootContext.Capabilities.KubeVersion.Minor | int) 32 }}
+    {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "resources")) }}
+resources: {{ . | nindent 2 }}
+    {{- end -}}
+  {{- end -}}
   {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "restartPolicy")) }}
 restartPolicy: {{ . | trim }}
   {{- end -}}
@@ -58,7 +63,7 @@ nodeSelector: {{ . | nindent 2 }}
 affinity: {{- tpl . $rootContext | nindent 2 }}
   {{- end -}}
   {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "topologySpreadConstraints")) }}
-topologySpreadConstraints: {{ . | nindent 2 }}
+topologySpreadConstraints: {{- tpl . $rootContext | nindent 2 }}
   {{- end -}}
   {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "tolerations")) }}
 tolerations: {{ . | nindent 2 }}

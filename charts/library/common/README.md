@@ -1,12 +1,16 @@
 # common
 
-![Version: 3.7.3](https://img.shields.io/badge/Version-3.7.3-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square)
+![Version: 4.1.1](https://img.shields.io/badge/Version-4.1.1-informational?style=flat-square) ![Type: library](https://img.shields.io/badge/Type-library-informational?style=flat-square)
 
 Function library for Helm charts
 
+## Source Code
+
+* <https://github.com/bjw-s-labs/helm-charts>
+
 ## Requirements
 
-Kubernetes: `>=1.22.0-0`
+Kubernetes: `>=1.28.0-0`
 
 ## Dependencies
 
@@ -27,7 +31,7 @@ Include this chart as a dependency in your `Chart.yaml` e.g.
 # Chart.yaml
 dependencies:
   - name: common
-    version: 3.7.3
+    version: 4.1.1
     repository: https://bjw-s-labs.github.io/helm-charts/
 ```
 

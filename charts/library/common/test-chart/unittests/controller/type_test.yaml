@@ -1,13 +1,14 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: controller types
+suite: controller - types
 templates:
   - common.yaml
 values:
   - ../_values/controllers_main_default_container.yaml
 tests:
-  - it: default should pass
+  - it: should default to Deployment
     asserts:
+<<<<<<< HEAD
       - documentIndex: &deploymentDoc 0
         matchRegex:
           path: kind
@@ -97,6 +98,25 @@ tests:
         equal:
           path: metadata.labels['app.kubernetes.io/component']
           value: second
+=======
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: release-name
+          any: true
+
+  - it: rollout should pass
+    set:
+      controllers.main.type: rollout
+    asserts:
+      - documentIndex: &ControllerDoc 0
+        isKind:
+          of: Rollout
+      - documentIndex: *ControllerDoc
+        equal:
+          path: metadata.name
+          value: RELEASE-NAME
+>>>>>>> bjw-s-labs-main
 
   - it: rollout should pass
     set:
@@ -114,42 +134,39 @@ tests:
     set:
       controllers.main.type: daemonset
     asserts:
-      - documentIndex: &ControllerDoc 0
-        isKind:
-          of: DaemonSet
-      - documentIndex: *ControllerDoc
-        equal:
-          path: metadata.name
-          value: RELEASE-NAME
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: DaemonSet
+          name: release-name
+          any: true
 
   - it: statefulset should pass
     set:
       controllers.main.type: statefulset
     asserts:
-      - documentIndex: &ControllerDoc 0
-        isKind:
-          of: StatefulSet
-      - documentIndex: *ControllerDoc
-        equal:
-          path: metadata.name
-          value: RELEASE-NAME
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: StatefulSet
+          name: release-name
+          any: true
 
   - it: cronjob should pass
     set:
       controllers.main.type: cronjob
       controllers.main.cronjob.schedule: "*/20 * * * *"
     asserts:
-      - documentIndex: &ControllerDoc 0
-        isKind:
-          of: CronJob
-      - documentIndex: *ControllerDoc
-        equal:
-          path: metadata.name
-          value: RELEASE-NAME
+      - containsDocument:
+          apiVersion: batch/v1
+          kind: CronJob
+          name: release-name
+          any: true
 
-  - it: disabled should pass
+  - it: job should pass
     set:
-      controllers.main.enabled: false
+      controllers.main.type: job
     asserts:
-      - hasDocuments:
-          count: 0
+      - containsDocument:
+          apiVersion: batch/v1
+          kind: Job
+          name: release-name
+          any: true

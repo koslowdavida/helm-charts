@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
-suite: nameOverride tests
+suite: misc - global nameOverride test
 templates:
   - common.yaml
 values:
@@ -8,6 +8,7 @@ values:
 tests:
   - it: default name is set to release name
     asserts:
+<<<<<<< HEAD
       - documentIndex: &ControllerDoc 0
         matchRegex:
           path: kind
@@ -16,11 +17,19 @@ tests:
         equal:
           path: metadata.name
           value: RELEASE-NAME
+=======
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: release-name
+          any: true
+>>>>>>> bjw-s-labs-main
 
   - it: global.nameOverride can be set
     set:
       global.nameOverride: custom-name
     asserts:
+<<<<<<< HEAD
       - documentIndex: &ControllerDoc 0
         matchRegex:
           path: kind
@@ -29,3 +38,10 @@ tests:
         equal:
           path: metadata.name
           value: RELEASE-NAME-custom-name
+=======
+      - containsDocument:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: release-name-custom-name
+          any: true
+>>>>>>> bjw-s-labs-main
