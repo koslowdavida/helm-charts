@@ -45,7 +45,7 @@ spec:
   strategy: {{ toYaml $rolloutObject.strategy | nindent 4 }}
   selector:
     matchLabels:
-      app.kubernetes.io/component: {{ $rolloutObject.identifier }}
+      app.kubernetes.io/controller: {{ $rolloutObject.identifier }}
       {{- include "bjw-s.common.lib.metadata.selectorLabels" $rootContext | nindent 6 }}
   template:
     metadata:
