@@ -20,4 +20,4 @@ rust = "1.87" # Required for schematools
 "pipx:yamale" = "6.0.0"
 
 [hooks]
-postinstall = "uv pip install --upgrade -r docs/requirements.txt"
+postinstall = "uv pip install --upgrade -r {{config_root}}/docs/requirements.txt"
