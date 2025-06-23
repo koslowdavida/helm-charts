@@ -217,6 +217,10 @@ jobs:
       # ----------------------------
       # Publish chart to bjw-s OCI registry
       # ----------------------------
+      - name: Install Cosign
+        if: ${{ inputs.publishToOciRegistry }}
+        uses: sigstore/cosign-installer@fb28c2b6339dcd94da6e4cbcbc5e888961f6f8c3 # v3.9.0
+
       - name: Push Helm charts to OCI registry
         if: ${{ inputs.publishToOciRegistry }}
         shell: bash
