@@ -28,14 +28,15 @@ tasks:
     desc: Test chart [CHART=required]
     preconditions:
       # Requires https://github.com/kstasik/schema-tools
-      - which helm schematools yq
+      - which helm schematools-cli yq
       - test -d "{{.CHART_DIR}}"
       - test -d "{{.CHART_TEST_DIR}}"
     requires:
       vars:
         - CHART
     vars:
-      GLOB: "{{.GLOB | default \"**/*_test.yaml\"}}"
+      GLOB: >-
+        {{.GLOB | default "**/*_test.yaml"}}
       CHART_DIR: "{{.PROJECT_DIR}}/charts/{{.CHART}}"
       CHART_TYPE:
         sh: yq eval '.type // "application"' {{.PROJECT_DIR}}/charts/{{.CHART}}/Chart.yaml
@@ -43,17 +44,17 @@ tasks:
         {{.CHART_DIR}}{{- if eq .CHART_TYPE "library" -}}/test-chart{{- end -}}
     dir: "{{.CHART_TEST_DIR}}"
     cmds:
-    - cp "{{.CHART_DIR}}/values.schema.json" "{{.CHART_DIR}}/values.schema.bak"
-    - schematools process dereference "{{.CHART_DIR}}/values.schema.json" --to-file "{{.CHART_DIR}}/values.schema.json"
-    - defer: mv "{{.CHART_DIR}}/values.schema.bak" "{{.CHART_DIR}}/values.schema.json"
-    - helm dep update
-    - helm unittest --color -f "unittests/{{.GLOB}}" .
+      - cp "{{.CHART_DIR}}/values.schema.json" "{{.CHART_DIR}}/values.schema.bak"
+      - schematools-cli process dereference "{{.CHART_DIR}}/values.schema.json" --to-file "{{.CHART_DIR}}/values.schema.json"
+      - defer: mv "{{.CHART_DIR}}/values.schema.bak" "{{.CHART_DIR}}/values.schema.json"
+      - helm dep update
+      - helm unittest --color -f "unittests/{{.GLOB}}" .
     silent: true
 
   dependency-cleanup:
     desc: clean up chart dependencies
     dir: "{{.PROJECT_DIR}}/charts"
     cmds:
-    - find {{.PROJECT_DIR}}/charts/ -mindepth 1 -type f -name 'Chart.lock' -print0 | xargs -r -0 rm
-    - find {{.PROJECT_DIR}}/charts/ -mindepth 1 -type d -name 'charts' -print0 | xargs -r -0 rm -rf
+      - find {{.PROJECT_DIR}}/charts/ -mindepth 1 -type f -name 'Chart.lock' -print0 | xargs -r -0 rm
+      - find {{.PROJECT_DIR}}/charts/ -mindepth 1 -type d -name 'charts' -print0 | xargs -r -0 rm -rf
     silent: true

@@ -1,3 +1,4 @@
+---
 name: "Pull Request: Validate"
 
 on:
@@ -29,6 +30,9 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+
+      - name: Install Mise and set up tool cache
+        uses: jdx/mise-action@13abe502c30c1559a5c37dff303831bab82c9402 # v2.2.3
 
       - name: Grab repository configuration
         id: repo-config
