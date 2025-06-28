@@ -103,7 +103,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Mise and required tools
-        uses: jdx/mise-action@429184fe4bc03ec959a8c13a993f514e6633ed3d # v2.3.0
+        uses: jdx/mise-action@5cb1df66ed5e1fb3c670ea0b62fd17a76979826a # v2.3.1
 
       - name: Dereference JSON schema
         uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@09c4cc6c7644cdd57e28a9dfeb1b858d3cc7a979
