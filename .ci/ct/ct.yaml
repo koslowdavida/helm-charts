@@ -1,3 +1,4 @@
+---
 chart-yaml-schema: .ci/ct/chart_schema.yaml
 lint-conf: .yamllint.yml
 

@@ -1,3 +1,4 @@
+---
 name: "Charts: Lint (Reusable)"
 
 on:
@@ -5,16 +6,9 @@ on:
     inputs:
       charts:
         description: >
-          Json encoded list of Helm charts to release.
-          Defaults to releasing everything.
+          Json encoded list of Helm charts to release. Defaults to releasing everything.
         default: "[]"
         required: true
-        type: string
-      helmVersion:
-        description: >
-          Helm version to use.
-        default: "latest"
-        required: false
         type: string
 
 permissions:
@@ -49,7 +43,7 @@ jobs:
 
       - name: Get chart details for PR
         id: chart-details-pr
-        uses: bjw-s-labs/helm-charts-actions/get-chart-details@94949e8e9cccd3f8ee1f6847ae37fa4b94e09ab4
+        uses: bjw-s-labs/helm-charts-actions/get-chart-details@47dd0ac0131bdc692594410637dc4d1787d50cb0
         with:
           path: pull/charts/${{ matrix.chart }}
           validateChartYaml: true
@@ -57,26 +51,25 @@ jobs:
 
       - name: Get chart details for default branch
         id: chart-details-default
-        uses: bjw-s-labs/helm-charts-actions/get-chart-details@94949e8e9cccd3f8ee1f6847ae37fa4b94e09ab4
+        uses: bjw-s-labs/helm-charts-actions/get-chart-details@47dd0ac0131bdc692594410637dc4d1787d50cb0
         with:
           path: default/charts/${{ matrix.chart }}
           allowChartToNotExist: true
           validateChartYaml: false
           requireChangelog: false
+          # - name: Check version update
+          #   if: ${{ steps.chart-details-pr.outputs.version == steps.chart-details-default.outputs.version }}
+          #   uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+          #   with:
+          #     script: |
+          #       core.setFailed("Chart version has not been updated for ${{ matrix.chart }}");
 
-      # - name: Check version update
-      #   if: ${{ steps.chart-details-pr.outputs.version == steps.chart-details-default.outputs.version }}
-      #   uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-      #   with:
-      #     script: |
-      #       core.setFailed("Chart version has not been updated for ${{ matrix.chart }}");
-
-      # - name: Check changelog update
-      #   if: ${{ steps.chart-details-pr.outputs.changes == steps.chart-details-default.outputs.changes }}
-      #   uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-      #   with:
-      #     script: |
-      #       core.setFailed("Changelog has not been updated for ${{ matrix.chart }}");
+          # - name: Check changelog update
+          #   if: ${{ steps.chart-details-pr.outputs.changes == steps.chart-details-default.outputs.changes }}
+          #   uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+          #   with:
+          #     script: |
+          #       core.setFailed("Changelog has not been updated for ${{ matrix.chart }}");
 
   validate_success:
     needs:
@@ -109,18 +102,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install Kubernetes tools
-        uses: yokawasa/action-setup-kube-tools@9e25a4277af127b60011c95b6ed2da7e3b3613b1 # v0.11.2
-        with:
-          setup-tools: |
-            helmv3
-          helm: "${{ inputs.helmVersion }}"
-
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@0d28d3144d3a25ea2cc349d6e59901c4ff469b3b # v2.7.0
+      - name: Install Mise and required tools
+        uses: jdx/mise-action@bfb9fa0b029db830a8c570757cee683df207a6c5 # v2.4.0
 
       - name: Dereference JSON schema
-        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@94949e8e9cccd3f8ee1f6847ae37fa4b94e09ab4
+        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@47dd0ac0131bdc692594410637dc4d1787d50cb0
         with:
           schemaFile: "charts/${{ matrix.chart }}/values.schema.json"
           outputFile: "charts/${{ matrix.chart }}/values.schema.json"

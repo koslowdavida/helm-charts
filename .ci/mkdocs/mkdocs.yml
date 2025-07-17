@@ -1,4 +1,6 @@
 ---
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+
 # Project information
 site_name: bjw-s Helm Charts
 site_url: https://bjw-s-labs.github.io/helm-charts/
@@ -42,7 +44,8 @@ theme:
 # Plugins
 plugins:
   - search:
-      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+      separator: >-
+        [\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])
   - minify:
       minify_html: true
 

@@ -1,7 +1,7 @@
 {
   "instance": {
     "allOf": [
-      { "$ref": "definitions.json#/resourceIdentifier" },
+      {"$ref": "definitions.json#/resourceIdentifier"},
       {
         "type": "object",
         "additionalProperties": false,
@@ -10,10 +10,12 @@
           "prefix": {},
           "suffix": {},
           "enabled": {
+            "description": "Set to false to disable the controller.",
             "type": "boolean",
             "default": true
           },
           "type": {
+            "description": "Controller type. Supported values: deployment, daemonset, statefulset, cronjob, job.",
             "type": "string",
             "enum": [
               "deployment",
@@ -25,98 +27,86 @@
             ],
             "default": "deployment"
           },
-          "annotations": {
-            "$ref": "definitions.json#/annotations"
-          },
-          "labels": {
-            "$ref": "definitions.json#/labels"
-          },
+          "annotations": {"$ref": "definitions.json#/annotations"},
+          "labels": {"$ref": "definitions.json#/labels"},
           "pod": {
+            "description": "Pod-level options for this controller.",
             "$ref": "pod.json#/options"
           },
           "replicas": {
-            "type": [
-              "integer",
-              "null"
-            ],
+            "description": "Number of desired pods. Set to null when using a HorizontalPodAutoscaler.",
+            "type": ["integer", "null"],
             "default": 1
           },
           "revisionHistoryLimit": {
+            "description": "ReplicaSet revision history limit.",
             "type": "integer"
           },
           "rollingUpdate": {
+            "description": "Controller upgrade strategy options.",
             "type": "object"
           },
           "strategy": {
-            "type": ["object", "string"]
+            "type": ["object", "string"],
+            "description": "Controller upgrade strategy."
           },
           "cronjob": {
+            "description": "CronJob-specific options. Required when type is cronjob.",
             "$ref": "#/cronjob"
           },
           "job": {
+            "description": "Job-specific options. Required when type is job.",
             "$ref": "#/job"
           },
           "statefulset": {
+            "description": "StatefulSet-specific options. Required when type is statefulset.",
             "$ref": "#/statefulset"
           },
           "applyDefaultContainerOptionsToInitContainers": {
+            "description": "Apply defaultContainerOptions to initContainers.",
             "type": "boolean",
             "default": true
           },
           "defaultContainerOptionsStrategy": {
+            "description": "Strategy for default container options.\noverwrite: use container-level options if set.\nmerge: merge container-level options with defaults.",
             "type": "string",
             "default": "overwrite",
-            "enum": [
-              "overwrite",
-              "merge"
-            ]
+            "enum": ["overwrite", "merge"]
           },
           "defaultContainerOptions": {
+            "description": "Default options for all (init)Containers. Each can be overridden on a container level.",
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "args": {
-                "$ref": "containers.json#/args"
-              },
-              "command": {
-                "$ref": "containers.json#/command"
-              },
-              "env": {
-                "$ref": "containers.json#/env"
-              },
-              "envFrom": {
-                "$ref": "containers.json#/envFrom"
-              },
-              "image": {
-                "$ref": "containers.json#/image"
-              },
-              "resources": {
-                "$ref": "k8s-api.json#/core.v1.ResourceRequirements"
-              },
-              "securityContext": {
-                "$ref": "k8s-api.json#/core.v1.ContainerSecurityContext"
-              }
+              "args": {"$ref": "containers.json#/args"},
+              "command": {"$ref": "containers.json#/command"},
+              "env": {"$ref": "containers.json#/env"},
+              "envFrom": {"$ref": "containers.json#/envFrom"},
+              "image": {"$ref": "containers.json#/image"},
+              "resources": {"$ref": "k8s-api.json#/core.v1.ResourceRequirements"},
+              "securityContext": {"$ref": "k8s-api.json#/core.v1.ContainerSecurityContext"}
             }
           },
           "initContainers": {
+            "description": "InitContainers as dictionary items.",
             "type": "object",
-            "additionalProperties": {
-              "$ref": "containers.json#/container"
-            }
+            "additionalProperties": {"$ref": "containers.json#/container"}
           },
           "containers": {
+            "description": "Containers as dictionary items.",
             "type": "object",
-            "additionalProperties": {
-              "$ref": "containers.json#/container"
-            }
+            "additionalProperties": {"$ref": "containers.json#/container"}
           },
           "serviceAccount": {
+            "description": "ServiceAccount used by the controller.",
             "type": "object",
             "properties": {
               "name": {
+                "description": "Reference a serviceAccount by its name. Helm templates are supported.",
                 "type": "string"
               },
               "identifier": {
+                "description": "Reference a serviceAccount configured in this chart by its key.",
                 "type": "string"
               }
             }
@@ -239,19 +229,13 @@
               "not": {
                 "anyOf": [
                   {
-                    "required": [
-                      "statefulset"
-                    ]
+                    "required": ["statefulset"]
                   },
                   {
-                    "required": [
-                      "cronjob"
-                    ]
+                    "required": ["cronjob"]
                   },
                   {
-                    "required": [
-                      "job"
-                    ]
+                    "required": ["job"]
                   },
                   {
                     "required": [
@@ -274,22 +258,16 @@
                   "const": "statefulset"
                 }
               },
-              "required": [
-                "type"
-              ]
+              "required": ["type"]
             },
             "then": {
               "not": {
                 "anyOf": [
                   {
-                    "required": [
-                      "cronjob"
-                    ]
+                    "required": ["cronjob"]
                   },
                   {
-                    "required": [
-                      "job"
-                    ]
+                    "required": ["job"]
                   },
                   {
                     "required": [
@@ -312,9 +290,7 @@
                   "const": "cronjob"
                 }
               },
-              "required": [
-                "type"
-              ]
+              "required": ["type"]
             },
             "then": {
               "allOf": [
@@ -322,14 +298,10 @@
                   "not": {
                     "anyOf": [
                       {
-                        "required": [
-                          "statefulset"
-                        ]
+                        "required": ["statefulset"]
                       },
                       {
-                        "required": [
-                          "job"
-                        ]
+                        "required": ["job"]
                       },
                       {
                         "required": [
@@ -345,9 +317,7 @@
                   }
                 },
                 {
-                  "required": [
-                    "cronjob"
-                  ]
+                  "required": ["cronjob"]
                 }
               ]
             }
@@ -359,22 +329,16 @@
                   "const": "job"
                 }
               },
-              "required": [
-                "type"
-              ]
+              "required": ["type"]
             },
             "then": {
               "not": {
                 "anyOf": [
                   {
-                    "required": [
-                      "statefulset"
-                    ]
+                    "required": ["statefulset"]
                   },
                   {
-                    "required": [
-                      "cronjob"
-                    ]
+                    "required": ["cronjob"]
                   },
                   {
                     "required": [
@@ -408,18 +372,12 @@
         "properties": {
           "whenDeleted": {
             "type": "string",
-            "enum": [
-              "Delete",
-              "Retain"
-            ],
+            "enum": ["Delete", "Retain"],
             "default": "Retain"
           },
           "whenScaled": {
             "type": "string",
-            "enum": [
-              "Delete",
-              "Retain"
-            ],
+            "enum": ["Delete", "Retain"],
             "default": "Retain"
           }
         }
@@ -491,10 +449,7 @@
         "type": "string"
       }
     },
-    "required": [
-      "name",
-      "size"
-    ]
+    "required": ["name", "size"]
   },
 
   "cronjob": {
@@ -541,9 +496,7 @@
         "type": "integer"
       }
     },
-    "required": [
-      "schedule"
-    ]
+    "required": ["schedule"]
   },
 
   "job": {
