@@ -65,7 +65,7 @@ jobs:
           kubectl taint --all=true nodes node.cloudprovider.kubernetes.io/uninitialized- || true
 
       - name: Dereference JSON schema
-        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@e943699c84c7a2003ffae0c5c5d92263445d1bad
+        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@a2085ba53ee544b88098353ce1477c97c98e4962
         with:
           schemaFile: "charts/${{ matrix.chart }}/values.schema.json"
           outputFile: "charts/${{ matrix.chart }}/values.schema.json"
@@ -133,7 +133,7 @@ jobs:
         uses: jdx/mise-action@eb2f5cb41b0a8175dad2f797e3daca6fe7795a19 # v2.4.2
 
       - name: Dereference JSON schema
-        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@e943699c84c7a2003ffae0c5c5d92263445d1bad
+        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@a2085ba53ee544b88098353ce1477c97c98e4962
         with:
           schemaFile: "charts/${{ matrix.chart }}/values.schema.json"
           outputFile: "charts/${{ matrix.chart }}/values.schema.json"
