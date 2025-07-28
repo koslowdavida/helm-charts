@@ -43,7 +43,7 @@ Returns the value for volumes
       {{- $pvcName := (include "bjw-s.common.lib.chart.names.fullname" $rootContext) -}}
       {{- if $persistenceValues.existingClaim -}}
         {{- /* Always prefer an existingClaim if that is set */ -}}
-        {{- $pvcName = $persistenceValues.existingClaim -}}
+        {{- $pvcName = tpl $persistenceValues.existingClaim  $rootContext -}}
       {{- else -}}
         {{- /* Otherwise refer to the PVC name */ -}}
         {{- $object := (include "bjw-s.common.lib.pvc.getByIdentifier" (dict "rootContext" $rootContext "id" $identifier) | fromYaml) -}}
@@ -109,6 +109,14 @@ Returns the value for volumes
       {{- $_ := set $volume.hostPath "path" (required "hostPath not set" $persistenceValues.hostPath) -}}
       {{- with $persistenceValues.hostPathType }}
         {{- $_ := set $volume.hostPath "type" . -}}
+      {{- end -}}
+
+    {{- /* image persistence type */ -}}
+    {{- else if and (ge ($rootContext.Capabilities.KubeVersion.Minor | int) 33) (eq $persistenceValues.type "image") -}}
+      {{- $_ := set $volume "image" dict -}}
+      {{- $_ := set $volume.image "reference" $persistenceValues.image -}}
+      {{- with $persistenceValues.pullPolicy -}}
+        {{- $_ := set $volume.image "pullPolicy" . -}}
       {{- end -}}
 
     {{- /* nfs persistence type */ -}}
