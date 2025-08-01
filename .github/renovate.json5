@@ -2,6 +2,16 @@
   extends: [
     "github>bjw-s/renovate-config",
     "github>bjw-s/renovate-config:automerge-github-actions",
-    "github>bjw-s-labs/helm-charts//.github/renovate/custom-managers.json5"
+    "github>bjw-s-labs/helm-charts//.github/renovate/custom-managers.json5",
+  ],
+  packageRules: [
+    {
+      description: "Auto merge minors and patches for mise packages",
+      matchManagers: ["mise"],
+      automerge: true,
+      automergeType: "pr",
+      matchUpdateTypes: ["minor", "patch"],
+      ignoreTests: false,
+    },
   ],
 }
