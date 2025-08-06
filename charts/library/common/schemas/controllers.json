@@ -135,7 +135,7 @@
                             "scaleDownDelayRevisionLimit": { "type": "integer" },
                             "prePromotionAnalysis": { "type": "object" },
                             "postPromotionAnalysis": { "type": "object" },
-                            "autoPromotionEnabled": { "type": "boolean" },
+                            "autoPromotionEnabled": { "type": "string" },
                             "autoPromotionSeconds": { "type": "integer" },
                             "previewReplicaCount": { "type": ["integer", "null"] }
                           },
