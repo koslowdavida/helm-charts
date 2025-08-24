@@ -43,7 +43,7 @@ jobs:
 
       - name: Get chart details for PR
         id: chart-details-pr
-        uses: bjw-s-labs/helm-charts-actions/get-chart-details@beddb59cec05e9d69ee845d7e9d0611e158a12b9
+        uses: bjw-s-labs/helm-charts-actions/get-chart-details@23d9e2938a11b6b9f0bf9eec111207921730dc20
         with:
           path: pull/charts/${{ matrix.chart }}
           validateChartYaml: true
@@ -51,7 +51,7 @@ jobs:
 
       - name: Get chart details for default branch
         id: chart-details-default
-        uses: bjw-s-labs/helm-charts-actions/get-chart-details@beddb59cec05e9d69ee845d7e9d0611e158a12b9
+        uses: bjw-s-labs/helm-charts-actions/get-chart-details@23d9e2938a11b6b9f0bf9eec111207921730dc20
         with:
           path: default/charts/${{ matrix.chart }}
           allowChartToNotExist: true
@@ -106,7 +106,7 @@ jobs:
         uses: jdx/mise-action@ca0c5fc9c8a8386dae8ba5d37608a083a307991c # v3.1.0
 
       - name: Dereference JSON schema
-        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@beddb59cec05e9d69ee845d7e9d0611e158a12b9
+        uses: bjw-s-labs/helm-charts-actions/dereference-json-schema@23d9e2938a11b6b9f0bf9eec111207921730dc20
         with:
           schemaFile: "charts/${{ matrix.chart }}/values.schema.json"
           outputFile: "charts/${{ matrix.chart }}/values.schema.json"
