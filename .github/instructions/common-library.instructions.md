@@ -1,15 +1,19 @@
-# Common Library Development Instructions
+---
+applyTo: "charts/library/common/**/*"
+---
 
-The `common` library chart is the foundation of this repository. It provides reusable templates and functions for Kubernetes resource generation.
+# Common Library development instructions
+
+The common library chart is the foundation of this repository. It provides reusable templates and functions for Kubernetes resource generation.
 
 ## Structure
 
-- `templates/classes/`: Contains template definitions for various Kubernetes resources
-- `templates/lib/`: Contains library functions used across templates
-- `templates/loader/`: Contains code for loading and initializing templates
-- `templates/render/`: Contains code for rendering resources
-- `templates/values/`: Contains code for value validation
-- `schemas/`: JSON schemas for validating values
+templates/classes/: Contains template definitions for various Kubernetes resources
+templates/lib/: Contains library functions used across templates
+templates/loader/: Contains code for loading and initializing templates
+templates/render/: Contains code for rendering resources
+templates/values/: Contains code for value validation
+schemas/: JSON schemas for validating values
 
 ## Key Concepts
 
@@ -17,40 +21,42 @@ The `common` library chart is the foundation of this repository. It provides reu
 2. **Library Functions**: Helper functions that can be used across templates
 3. **Values Schema**: JSON schema definitions for validating chart values
 
-## Development Guidelines
+## Common Library Best Practices
 
-### Adding New Features
+- Keep template functions focused and reusable
+- Use clear naming conventions for functions and parameters
+- Document function parameters and behavior
+- Maintain backward compatibility where possible
 
-When adding new features to the common library:
+## Testing and validation
 
-1. Determine which resource type(s) the feature applies to
-2. Add appropriate parameters to the values schema
-3. Update the relevant template class(es)
-4. Update documentation as needed
-5. Increment the chart version in `Chart.yaml` following semver principles
+Testing is a critical part of chart development to ensure reliability and compatibility.
 
-### Modifying Existing Features
+### Testing Structure
 
-When modifying existing features:
+- `charts/library/common/test-chart/`: Contains a test chart for validating the common library
+- `charts/library/common/test-chart/unittests/`: Contains unit tests for different resource types
+- `charts/library/common/test-chart/ci/`: Contains CI test values
 
-1. Ensure backward compatibility or document breaking changes
-2. Update the relevant template class(es)
-3. Update the values schema if needed
-4. Update documentation
-5. Increment the chart version appropriately
+### Testing Tools
 
-### Testing Changes
+This repository uses:
 
-After making changes:
+1. **Helm lint**: For syntax validation
+2. **Schema validation**: For values validation
+3. **Unit tests**: For template functionality validation
 
-1. Run `task charts:lint` to validate chart syntax
-2. Run `task charts:test` to run chart tests
-3. Deploy a test chart using the library to verify functionality
+### Adding New Tests
 
-### Common Library Best Practices
+When adding new features, always add corresponding tests:
 
-1. Keep template functions focused and reusable
-2. Use clear naming conventions for functions and parameters
-3. Document function parameters and behavior
-4. Maintain backward compatibility where possible
-5. Update version numbers in accordance with semver principles
+1. For new resource types, add unit tests in the appropriate directory
+2. For new value options, add test cases that exercise those options
+3. For edge cases, add specific test values to validate behavior
+
+### Testing Best Practices
+
+1. Test both valid and invalid configurations
+2. Test resource generation with different combinations of values
+3. Test template functions with various inputs
+4. Test backward compatibility when making changes

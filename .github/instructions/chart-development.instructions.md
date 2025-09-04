@@ -1,6 +1,10 @@
-# Version Management Instructions
+---
+applyTo: "charts/**/*"
+---
 
-Proper versioning is critical for maintaining compatibility and communicating changes to users.
+# Generic Helm chart development instructions
+
+These instructions provide a general guide for developing Helm charts in this repository. They apply to all charts, including the common library chart.
 
 ## Versioning Principles
 
@@ -10,16 +14,16 @@ This repository follows [Semantic Versioning (SemVer)](https://semver.org/):
 2. **MINOR**: Functionality added in a backward compatible manner
 3. **PATCH**: Backward compatible bug fixes
 
-## Version Management Guidelines
-
 ### When to Increment Versions
 
 - **MAJOR**: When making breaking changes like:
+
   - Removing or renaming values
   - Changing default behavior significantly
   - Requiring a newer Kubernetes version
 
 - **MINOR**: When adding new features like:
+
   - New resource types
   - New configuration options
   - Extended functionality
