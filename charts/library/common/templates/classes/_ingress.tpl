@@ -90,13 +90,21 @@ spec:
                   {{ if kindIs "float64" .service.port -}}
                     {{ $servicePort = .service.port -}}
                   {{ else if kindIs "string" .service.port -}}
-                    {{/* If a port name is given, try to resolve to a number */ -}}
-                    {{ $servicePort = include "bjw-s.common.lib.service.getPortNumberByName" (dict "rootContext" $rootContext "serviceID" .service.identifier "portName" .service.port) -}}
+                    {{ if eq .service.port "use-annotation" -}}
+                      {{ $servicePort = .service.port -}}
+                    {{ else -}}
+                      {{/* If a port name is given, try to resolve to a number */ -}}
+                      {{ $servicePort = include "bjw-s.common.lib.service.getPortNumberByName" (dict "rootContext" $rootContext "serviceID" .service.identifier "portName" .service.port) -}}
+                    {{ end -}}
                   {{ end -}}
                 {{ end -}}
                 name: {{ default .service.name $serviceName }}
                 port:
+                  {{ if eq .service.port "use-annotation" -}}
+                  name: {{ $servicePort }}
+                  {{ else -}}
                   number: {{ $servicePort }}
+                  {{ end -}}
           {{- end }}
   {{- end }}
   {{- end }}
