@@ -90,7 +90,7 @@
     "additionalProperties": false,
     "properties": {
       "name": {"type": "string"},
-      "port": {"type": ["integer"]}
+      "port": {"type": ["integer", "string"]}
     },
     "required": ["name", "port"]
   },
