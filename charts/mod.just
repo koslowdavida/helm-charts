@@ -1,15 +1,14 @@
+set quiet := true
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
 # Static vars
 export REPO_CONFIG_FILE := justfile_dir() + "/.ci/repo-config.yaml"
 
-# Test a chart: just test CHART=path/relative/to/charts [GLOB="**/*_test.yaml"]
-# Mirrors logic from go-task (library charts use embedded test-chart/)
-# Parameters:
-#   CHART (required) - chart directory under charts/
-#   GLOB (optional)  - test file glob (defaults to **/*_test.yaml)
-# Restores values.schema.json after dereferencing.
-# Example: just test CHART=library/common
+[private]
+default:
+  just -l chart
+
+[doc('Test a chart')]
 test CHART GLOB="**/*_test.yaml":
   #!/usr/bin/env bash
   set -euo pipefail
@@ -29,7 +28,7 @@ test CHART GLOB="**/*_test.yaml":
   ( cd "$CHART_TEST_DIR" && helm dep update )
   ( cd "$CHART_TEST_DIR" && helm unittest --color -f "unittests/{{GLOB}}" . 2> >(grep -v 'found symbolic link' >&2))
 
-# Clean up chart dependency artifacts (Chart.lock files and nested charts/ dirs)
+[doc('Clean up chart dependency artifacts (Chart.lock files and nested charts/ dirs)')]
 cleanup:
     @find charts/ -mindepth 1 -type f -name 'Chart.lock' -print0 | xargs -0 rm -f
     @find charts/ -mindepth 1 -type d -name charts -print0 | xargs -0 rm -rf
