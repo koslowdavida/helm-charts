@@ -100,7 +100,7 @@ spec:
                 {{ end -}}
                 name: {{ default .service.name $serviceName }}
                 port:
-                  {{ if eq .service.port "use-annotation" -}}
+                  {{ if eq (quote .service.port) "use-annotation" -}}
                   name: {{ $servicePort }}
                   {{ else -}}
                   number: {{ $servicePort }}
