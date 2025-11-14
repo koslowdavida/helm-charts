@@ -1,6 +1,6 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/koslowdavida/helm-charts/app-template-4.2.0/charts/other/app-template/values.schema.json
-
+# yaml-language-server: $schema=https://raw.githubusercontent.com/koslowdavida/helm-charts/app-template-4.4.0/charts/other/app-template/values.schema.json
+#
 # Configure options applied to all pods
 defaultPodOptions:
   automountServiceAccountToken: false

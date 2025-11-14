@@ -32,7 +32,7 @@ jobs:
           persist-credentials: false
 
       - name: Install Mise and set up tool cache
-        uses: jdx/mise-action@5ac50f778e26fac95da98d50503682459e86d566 # v3.2.0
+        uses: jdx/mise-action@be3be2260bc02bc3fbf94c5e2fed8b7964baf074 # v3.4.0
 
       - name: Grab repository configuration
         id: repo-config
@@ -42,11 +42,11 @@ jobs:
 
       - name: Get all added or modified files
         id: added-modified-files
-        uses: bjw-s-labs/action-changed-files@930cef8463348e168cab7235c47fe95a7a235f65 # v0.3.3
+        uses: bjw-s-labs/action-changed-files@1a5aeab1bfa64d0c4e786f501d5a3f1fad4a24da # v0.4.1
 
       - name: Get all added or modified charts
         id: changed-charts
-        uses: bjw-s-labs/action-changed-files@930cef8463348e168cab7235c47fe95a7a235f65 # v0.3.3
+        uses: bjw-s-labs/action-changed-files@1a5aeab1bfa64d0c4e786f501d5a3f1fad4a24da # v0.4.1
         with:
           path: charts
           include_only_directories: true
@@ -54,7 +54,7 @@ jobs:
 
       - name: Determine charts to lint
         id: charts-to-lint
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           CHANGED_CHARTS: ${{ steps.changed-charts.outputs.changed_files }}
           REPO_SETTINGS: ${{ steps.repo-config.outputs.config }}
@@ -70,7 +70,7 @@ jobs:
 
       - name: Determine charts to install
         id: charts-to-install
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           CHANGED_CHARTS: ${{ steps.changed-charts.outputs.changed_files }}
           REPO_SETTINGS: ${{ steps.repo-config.outputs.config }}

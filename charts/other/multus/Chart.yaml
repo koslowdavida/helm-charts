@@ -1,0 +1,20 @@
+---
+apiVersion: v2
+description: A Helm chart for the Multus CNI CustomResourceDefinition
+name: multus
+version: 1.0.1
+appVersion: 4.2.2
+maintainers:
+  - name: bjw-s
+    email: me@bjw-s.dev
+sources:
+  - https://github.com/k8snetworkplumbingwg/multus-cni
+dependencies:
+  - name: common
+    repository: https://bjw-s-labs.github.io/helm-charts
+    version: 4.4.0
+annotations:
+  artifacthub.io/changes: |-
+    - kind: changed
+      description: |-
+        Update ghcr.io/k8snetworkplumbingwg/multus-cni ( v4.2.2 ➔ v4.2.3 )

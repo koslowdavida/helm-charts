@@ -1,7 +1,7 @@
 {
   "instance": {
     "allOf": [
-      {"$ref": "definitions.json#/resourceIdentifier"},
+      { "$ref": "definitions.json#/resourceIdentifier" },
       {
         "type": "object",
         "additionalProperties": false,
@@ -27,8 +27,8 @@
             ],
             "default": "deployment"
           },
-          "annotations": {"$ref": "definitions.json#/annotations"},
-          "labels": {"$ref": "definitions.json#/labels"},
+          "annotations": { "$ref": "definitions.json#/annotations" },
+          "labels": { "$ref": "definitions.json#/labels" },
           "pod": {
             "description": "Pod-level options for this controller.",
             "$ref": "pod.json#/options"
@@ -78,24 +78,32 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "args": {"$ref": "containers.json#/args"},
-              "command": {"$ref": "containers.json#/command"},
-              "env": {"$ref": "containers.json#/env"},
-              "envFrom": {"$ref": "containers.json#/envFrom"},
-              "image": {"$ref": "containers.json#/image"},
-              "resources": {"$ref": "k8s-api.json#/core.v1.ResourceRequirements"},
-              "securityContext": {"$ref": "k8s-api.json#/core.v1.ContainerSecurityContext"}
+              "args": { "$ref": "containers.json#/args" },
+              "command": { "$ref": "containers.json#/command" },
+              "env": { "$ref": "containers.json#/env" },
+              "envFrom": { "$ref": "containers.json#/envFrom" },
+              "image": { "$ref": "containers.json#/image" },
+              "resources": {
+                "$ref": "k8s-api.json#/core.v1.ResourceRequirements"
+              },
+              "securityContext": {
+                "$ref": "k8s-api.json#/core.v1.ContainerSecurityContext"
+              }
             }
           },
           "initContainers": {
             "description": "InitContainers as dictionary items.",
             "type": "object",
-            "additionalProperties": {"$ref": "containers.json#/container"}
+            "additionalProperties": {
+              "$ref": "containers.json#/container"
+            }
           },
           "containers": {
             "description": "Containers as dictionary items.",
             "type": "object",
-            "additionalProperties": {"$ref": "containers.json#/container"}
+            "additionalProperties": {
+              "$ref": "containers.json#/container"
+            }
           },
           "serviceAccount": {
             "description": "ServiceAccount used by the controller.",
@@ -397,6 +405,11 @@
             }
           }
         ]
+      },
+      "startOrdinal": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 0
       },
       "volumeClaimTemplates": {
         "type": "array",

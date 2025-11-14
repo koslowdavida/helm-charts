@@ -18,18 +18,14 @@ Returns the value for annotations
     -}}
   {{- end -}}
 
-  {{- /* Set to the default if it is set */ -}}
-  {{- $defaultOption := get (default dict $rootContext.Values.defaultPodOptions) "annotations" -}}
-  {{- if not (empty $defaultOption) -}}
-    {{- $annotations = merge $defaultOption $annotations -}}
-  {{- end -}}
-
-  {{- /* See if a pod-specific override is set */ -}}
-  {{- if hasKey $controllerObject "pod" -}}
-    {{- $podOption := get $controllerObject.pod "annotations" -}}
-    {{- if not (empty $podOption) -}}
-      {{- $annotations = merge $podOption $annotations -}}
-    {{- end -}}
+  {{- /* Fetch the configured annotations */ -}}
+  {{- $ctx := dict "rootContext" $rootContext "controllerObject" $controllerObject -}}
+  {{- $podAnnotations := (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "annotations")) | fromYaml -}}
+  {{- if not (empty $podAnnotations) -}}
+    {{- $annotations = merge
+      $podAnnotations
+      $annotations
+    -}}
   {{- end -}}
 
   {{- /* Add configMaps checksum */ -}}
@@ -43,7 +39,13 @@ Returns the value for annotations
     {{- if hasKey $configmap "includeInChecksum" -}}
       {{- $configMapIncludeInChecksum = $configmap.includeInChecksum -}}
     {{- end -}}
-    {{- if and $configMapEnabled $configMapIncludeInChecksum -}}
+    {{- /* Check if this controller should get the checksum */ -}}
+    {{- $includeChecksumInControllers := list -}}
+    {{- if hasKey $configmap "includeChecksumInControllers" -}}
+      {{- $includeChecksumInControllers = $configmap.includeChecksumInControllers -}}
+    {{- end -}}
+    {{- $configMapChecksumAddToController := or (empty $includeChecksumInControllers) (has $controllerObject.identifier $includeChecksumInControllers) -}}
+    {{- if and $configMapEnabled $configMapIncludeInChecksum $configMapChecksumAddToController -}}
       {{- $_ := set $configMapsFound $name (toYaml $configmap.data | sha256sum) -}}
     {{- end -}}
   {{- end -}}
@@ -65,7 +67,13 @@ Returns the value for annotations
     {{- if hasKey $secret "includeInChecksum" -}}
       {{- $secretIncludeInChecksum = $secret.includeInChecksum -}}
     {{- end -}}
-    {{- if and $secretEnabled $secretIncludeInChecksum -}}
+    {{- /* Check if this controller should get the checksum */ -}}
+    {{- $includeChecksumInControllers := list -}}
+    {{- if hasKey $secret "includeChecksumInControllers" -}}
+      {{- $includeChecksumInControllers = $secret.includeChecksumInControllers -}}
+    {{- end -}}
+    {{- $secretChecksumAddToController := or (empty $includeChecksumInControllers) (has $controllerObject.identifier $includeChecksumInControllers) -}}
+    {{- if and $secretEnabled $secretIncludeInChecksum $secretChecksumAddToController -}}
       {{- $_ := set $secretsFound $name (toYaml $secret.stringData | sha256sum) -}}
     {{- end -}}
   {{- end -}}

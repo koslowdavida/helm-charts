@@ -52,6 +52,9 @@ terminationGracePeriodSeconds: {{ . | trim }}
     {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "resources")) }}
 resources: {{ . | nindent 2 }}
     {{- end -}}
+    {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "resourceClaims")) }}
+resourceClaims: {{ . | nindent 2 }}
+    {{- end -}}
   {{- end -}}
   {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "restartPolicy")) }}
 restartPolicy: {{ . | trim }}
@@ -67,6 +70,9 @@ topologySpreadConstraints: {{- tpl . $rootContext | nindent 2 }}
   {{- end -}}
   {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "tolerations")) }}
 tolerations: {{ . | nindent 2 }}
+  {{- end }}
+  {{- with (include "bjw-s.common.lib.pod.getOption" (dict "ctx" $ctx "option" "schedulingGates")) }}
+schedulingGates: {{ . | nindent 2 }}
   {{- end }}
   {{- with (include "bjw-s.common.lib.pod.field.initContainers" (dict "ctx" $ctx) | trim) }}
 initContainers: {{ . | nindent 2 }}
