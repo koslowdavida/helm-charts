@@ -16,7 +16,7 @@ imagePullPolicy: {{ . | trim }}
 command: {{ . | trim | nindent 2 }}
   {{- end -}}
   {{- with (include "bjw-s.common.lib.container.field.args" (dict "ctx" $ctx) | trim) }}
-args: {{ . | trim | nindent 2 }}
+args: {{ tpl . $rootContext | trim | nindent 2 }}
   {{- end -}}
   {{- with $containerObject.workingDir }}
 workingDir: {{ . | trim }}

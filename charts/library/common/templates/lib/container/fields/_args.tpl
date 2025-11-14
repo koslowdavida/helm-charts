@@ -12,7 +12,7 @@ Args used by the container.
   {{- /* See if an override is desired */ -}}
   {{- if not (empty $argValues) -}}
     {{- if kindIs "string" $argValues -}}
-      {{- $args = append $args (tpl $argValues $rootContext) -}}
+      {{- $args = append $args $argValues -}}
     {{- else -}}
       {{- $args = $argValues -}}
     {{- end -}}
